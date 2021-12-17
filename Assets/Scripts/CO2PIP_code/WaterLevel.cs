@@ -4,13 +4,14 @@ using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
-using TMPro;
 
 public class WaterLevel : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI WaterLevelMarker;
+    [SerializeField] private Text WaterLevelMarker;
     public void OnSliderDrag(float value)
     {
+        Debug.Log("drag");
+
         /******** START changing water plane level ********/
         float height = value;
 
@@ -21,7 +22,7 @@ public class WaterLevel : MonoBehaviour
         while (currentTime < timer)
         {
             currentTime += Time.deltaTime;
-            
+            Debug.Log("changing position");
             transform.position = Vector3.Lerp(transform.position, newPos, currentTime / timer);
         }
         /******** END changing water plane level ********/
