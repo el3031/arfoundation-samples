@@ -9,6 +9,32 @@ using TMPro;
 public class WaterLevel : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI WaterLevelMarker;
+    private bool meshModified = false;
+    
+    void OnCollisionEnter(Collision other)
+    {
+        if (!meshModified)
+        {
+            RemodelMesh(other);
+        }
+    }
+
+    void RemodelMesh(Collision other)
+    {
+        ContactPoint[] contacts = new ContactPoint[100];
+        other.GetContacts(contacts);
+
+        Vector3[] collisionPoints = new Vector3[contacts.Length];
+        for (int i = 0; i < contacts.Length; i++)
+        {
+            collisionPoints[i] = contacts[i].point;
+        }
+        Mesh waterMesh = GetComponent<MeshFilter>().mesh;
+
+        waterMesh.SetVertices(collisionPoints);
+        meshModified = true;
+    }
+    
     public void OnSliderDrag(float value)
     {
         /******** START changing water plane level ********/
