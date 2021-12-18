@@ -15,8 +15,11 @@ public class WaterLevel : MonoBehaviour
     void Start()
     {
     	waterMesh = GetComponent<MeshFilter>().mesh;
+        Renderer ren = GetComponent<Renderer>();
+        rendr.material.renderQueue = 2002;
     }
     
+    /********
     void OnCollisionEnter(Collision other)
     {
         Debug.Log("colliding");
@@ -45,6 +48,7 @@ public class WaterLevel : MonoBehaviour
         waterMesh.SetVertices(collisionPoints);
         meshModified = true;
     }
+    ********/
     
     public void OnSliderDrag(float value)
     {
