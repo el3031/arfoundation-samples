@@ -4,13 +4,41 @@ using UnityEngine.XR.ARSubsystems;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
-using TMPro;
 
 public class WaterLevel : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI WaterLevelMarker;
+    [SerializeField] private Text WaterLevelMarker;
+
+    private bool meshModified = false;
+    
+    void OnCollisionEnter(Collision other)
+    {
+        if (!meshModified)
+        {
+            RemodelMesh(other);
+        }
+    }
+
+    void RemodelMesh(Collision other)
+    {
+        ContactPoint[] contacts = new ContactPoint[100];
+        other.GetContacts(contacts);
+
+        Vector3[] collisionPoints = new Vector3[contacts.Length];
+        for (int i = 0; i < contacts.Length; i++)
+        {
+            collisionPoints[i] = contacts[i].point;
+        }
+        Mesh waterMesh = GetComponent<MeshFilter>().mesh;
+
+        waterMesh.SetVertices(collisionPoints);
+        meshModified = true;
+    }
+    
     public void OnSliderDrag(float value)
     {
+        Debug.Log("drag");
+
         /******** START changing water plane level ********/
         float height = value;
 
@@ -21,7 +49,7 @@ public class WaterLevel : MonoBehaviour
         while (currentTime < timer)
         {
             currentTime += Time.deltaTime;
-            
+            Debug.Log("changing position");
             transform.position = Vector3.Lerp(transform.position, newPos, currentTime / timer);
         }
         /******** END changing water plane level ********/
