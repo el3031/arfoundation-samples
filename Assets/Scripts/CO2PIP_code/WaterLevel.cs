@@ -10,26 +10,37 @@ public class WaterLevel : MonoBehaviour
     [SerializeField] private Text WaterLevelMarker;
 
     private bool meshModified = false;
+    private Mesh waterMesh;
+
+    void Start()
+    {
+    	waterMesh = GetComponent<MeshFilter>().mesh;
+    }
     
     void OnCollisionEnter(Collision other)
     {
+        Debug.Log("colliding");
         if (!meshModified)
         {
+           	Debug.Log("remodeling mesh"); 
             RemodelMesh(other);
         }
     }
 
     void RemodelMesh(Collision other)
     {
-        ContactPoint[] contacts = new ContactPoint[100];
+        List<Vector3> verticesList = new List<Vector3>();
+        waterMesh.GetVertices(verticesList);
+        int verticesCount = verticesList.Count;
+        Debug.Log(verticesCount);
+        ContactPoint[] contacts = new ContactPoint[verticesCount];
         other.GetContacts(contacts);
 
-        Vector3[] collisionPoints = new Vector3[contacts.Length];
+        Vector3[] collisionPoints = new Vector3[verticesCount];
         for (int i = 0; i < contacts.Length; i++)
         {
             collisionPoints[i] = contacts[i].point;
         }
-        Mesh waterMesh = GetComponent<MeshFilter>().mesh;
 
         waterMesh.SetVertices(collisionPoints);
         meshModified = true;
@@ -37,7 +48,6 @@ public class WaterLevel : MonoBehaviour
     
     public void OnSliderDrag(float value)
     {
-        Debug.Log("drag");
 
         /******** START changing water plane level ********/
         float height = value;
@@ -49,7 +59,6 @@ public class WaterLevel : MonoBehaviour
         while (currentTime < timer)
         {
             currentTime += Time.deltaTime;
-            Debug.Log("changing position");
             transform.position = Vector3.Lerp(transform.position, newPos, currentTime / timer);
         }
         /******** END changing water plane level ********/
