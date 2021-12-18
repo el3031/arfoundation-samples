@@ -16,7 +16,7 @@ public class WaterLevel : MonoBehaviour
     {
     	waterMesh = GetComponent<MeshFilter>().mesh;
         Renderer ren = GetComponent<Renderer>();
-        rendr.material.renderQueue = 2002;
+        ren.material.renderQueue = 2002;
     }
     
     /********
